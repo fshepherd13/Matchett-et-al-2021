@@ -34,10 +34,10 @@ if "use_nextalign" in config and config["use_nextalign"]:
         output:
             alignment = "results/aligned{origin}.fasta",
             insertions = "results/insertions{origin}.tsv",
-            translations = expand("results/translations/seqs{{origin}}.gene.{gene}.fasta", gene=config.get('genes', ['S']))
+            translations = expand("results/translations/seqs{{origin}}.gene.{gene}.fasta", gene=config.get('genes'))
         params:
             outdir = "results/translations",
-            genes = ','.join(config.get('genes', ['S'])),
+            genes = ','.join(config.get('genes')),
             basename = "seqs{origin}"
         log:
             "logs/align{origin}.txt"
@@ -510,10 +510,10 @@ if "use_nextalign" in config and config["use_nextalign"]:
         output:
             alignment = "results/{build_name}/aligned.fasta",
             insertions = "results/{build_name}/insertions.tsv",
-            translations = expand("results/{{build_name}}/translations/aligned.gene.{gene}.fasta", gene=config.get('genes', ['S']))
+            translations = expand("results/{{build_name}}/translations/aligned.gene.{gene}.fasta", gene=config.get('genes'))
         params:
             outdir = "results/{build_name}/translations",
-            genes = ','.join(config.get('genes', ['S'])),
+            genes = ','.join(config.get('genes')),
             basename = "aligned"
         log:
             "logs/align_{build_name}.txt"
@@ -761,9 +761,9 @@ rule aa_muts_explicit:
         translations = lambda w: rules.build_align.output.translations
     output:
         node_data = "results/{build_name}/aa_muts_explicit.json",
-        translations = expand("results/{{build_name}}/translations/aligned.gene.{gene}_withInternalNodes.fasta", gene=config.get('genes', ['S']))
+        translations = expand("results/{{build_name}}/translations/aligned.gene.{gene}_withInternalNodes.fasta", gene=config.get('genes'))
     params:
-        genes = config.get('genes', 'S')
+        genes = config.get('genes')
     log:
         "logs/aamuts_{build_name}.txt"
     benchmark:
@@ -814,12 +814,13 @@ if "use_nextalign" in config and config["use_nextalign"]:
     rule distances:
         input:
             tree = rules.refine.output.tree,
-            alignments = "results/{build_name}/translations/aligned.gene.S_withInternalNodes.fasta",
-            distance_maps = ["defaults/distance_maps/S1.json"]
+            alignments = expand("results/{{build_name}}/translations/aligned.gene.{gene}_withInternalNodes.fasta", gene=config.get('genes')),
+            distance_maps = expand(["defaults/distance_maps/{dist}.json"], dist=config.get('distance'))
         params:
-            genes = 'S',
+            genes = config.get('genes'),
             comparisons = ['root'],
-            attribute_names = ['S1_mutations']
+            attribute_names = expand(['{dist}_mutations'], dist=config.get('distance')),
+            dist = config.get('distance')
         output:
             node_data = "results/{build_name}/distances.json"
         shell:

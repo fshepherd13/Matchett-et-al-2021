@@ -62,6 +62,9 @@ mask:
   # 13402, 24389 and 24390 are restricted to Belgian samples
   mask_sites: "13402 24389 24390"
 
+# Distance calculation settings. Defaults to using the S1 gene, but can be user-specified.
+distance: "S1"
+
 tree:
   tree-builder-args: "'-ninit 10 -n 4'"
 
