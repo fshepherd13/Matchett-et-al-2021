@@ -55,8 +55,9 @@ scripts/developer_scripts/inputs_new_sequences/
 scripts/developer_scripts/output_files_parse_metadata/
 scripts/developer_scripts/outputs_new_sequences/
 
-# SLURM log files
+# SLURM log files and scheduler files
 slurm-*.out
+*.srun
 
 #ipython notebook log files
 .ipynb_checkpoints
