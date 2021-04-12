@@ -1,0 +1,5 @@
+This is a build of global sequences of SARS-CoV-2 spike genes. Sequences were downloaded from Genbank on 04/05/2021 and parsed into FASTA file and metadata using code available [here](https://github.com/nextstrain/ncov-ingest). This build is based off of code originally written and maintained by [Nextstrain](https://nextstrain.org/sars-cov-2). 
+
+The full sequence set of SARS-CoV-2 is at least a million samples. Therefore, genomic data is downsampled using the same general strategy as the [Nextstrain global SARS-CoV-2 build](https://nextstrain.org/ncov/global) grouping sequences by region. Then 200 sequences from the previous 4 months and 200 sequences from the months prior to that are subsampled per region. 
+
+The sequence position numbering is based on [Wuhan-Hu-1/2019](https://www.ncbi.nlm.nih.gov/nuccore/MN908947) which is used as the reference strain. As stated by Nextstrain, "The phylogeny is rooted relative to early samples from Wuhan. Temporal resolution assumes a nucleotide substitution rate of 8 &times; 10^-4 subs per site per year. Full details on bioinformatic processing can be found [here](https://github.com/nextstrain/ncov)."
