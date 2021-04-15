@@ -9,6 +9,10 @@ defaults/colors.tsv
 defaults/colors_*.tsv
 stats.json
 
+#Files created by me, not necessarily by pipeline, for downstream analysis
+dn_ds/
+diversity_panel_data/
+
 # Sensitive environment variables
 environment*
 
