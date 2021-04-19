@@ -1,73 +1,32 @@
 # About
 
-This repository analyzes viral genomes using [Nextstrain](https://nextstrain.org) to understand how SARS-CoV-2, the virus that is responsible for the COVID-19 pandemic, evolves and spreads.
+This repository analyzes viral genomes using [Nextstrain](https://nextstrain.org) to understand how SARS-CoV-2, the virus that is responsible for the COVID-19 pandemic, evolves and spreads. This is forked from the main Nextstrain repository which creates builds out of the whole genome sequences of SARS-CoV-2. My goal was to modify the code to create gene-specific builds for the spike and nucleocapsid proteins. 
 
-We maintain a number of publicly-available builds, visible at [nextstrain.org/ncov](https://nextstrain.org/ncov).
+# Data source
 
-In July 2020, we introduced some major changes to this repository.
-If you were running customized builds before this, these changes may cause some merge conflicts.
-[Read here](https://github.com/nextstrain/ncov/blob/master/docs/change_log_2020-07.md) to find out about all the changes, and which ones may impact custom runs.
+SARS-CoV-2 sequence data can either be retrived through [GISAID](https://www.gisaid.org/) (which requires an account and registration) or [Genbank](https://www.ncbi.nlm.nih.gov/genbank/). In order to work with the Nextstrain pipeline, the sequence data and metadata must be properly formatted. I used Genbank data for this analysis, which can be downloaded and formatted using [ncov-ingest](https://github.com/nextstrain/ncov-ingest). Follow the instructions in that repo for downloading your own dataset. GISAID also supposedly maintains a dataset pre-formatted for use with Nextstrain, but there have been reports that this is [not accessible by all account holders](https://discussion.nextstrain.org/t/nextmeta-and-nextfasta-not-on-gisaid/224). So your mileage may vary.
 
----
-# Resources
+# Overview
+This repo contains builds and config files under "my_profiles" that are necessary to create spike and nucleocapsid alignments. The underlying snakemake code has also been modified, but it has not been thoroughly tested to see how compatible this is with Nextstrain's main pipeline. So this should be considered a one-off project. 
+The main modifications are the following:
+1. In each build.yaml file, the user must specify which parts of the genome to mask, leaving just the gene of interest. The nucleotide positions are relative to the  [SARS-CoV-2 reference strain](https://www.ncbi.nlm.nih.gov/nuccore/1798174254) gene annotation. 
+2. Several parts of the pipeline rely on calculations of genetic distance between sequences. In the main Nextstrain pipeline, this appears to always be based on the spike protein. For this pipeline, the gene used to calculate distance can be user-specified in the build.yaml file. So for example, the nucleocapsid build calculates genetic distance between strains using the N protein. This is specified in `distance: "N"` in the build.yaml file. I added a `distance` entry to the defaults parameter.yaml file so that it will default to using spike if not user-specified in the build-specific config files.
 
-### Use Nextstrain to analyze your SARS-CoV-2 data
+# Usage
+## Environment
+Nextstrain runs with a conda environment. See [setup and installation](https://nextstrain.github.io/ncov/setup.html) for more details. The yaml file is also included in this repo. To set up, run 
+```
+conda env create --file environment.yaml
+conda activate nextstrain
+```
 
-**We've written a comprehensive guide to get you up and running in <1 hr. Click on the below links to follow it. It covers:**
+## Running the build
+To re-run the builds for spike or nucleocapsid genes, run the following:
+```
+export AUGUR_RECURSION_LIMIT=10000
+snakemake --cores 8 --profile ./my_profiles/n_only
+snakemake --cores 8 --profile ./my_profiles/spike_only
+```
 
-0. [**Introduction**](https://nextstrain.github.io/ncov/index) _(Start here)_
-1. [**Setup and installation**](https://nextstrain.github.io/ncov/setup)
-2. [**Preparing your data**](https://nextstrain.github.io/ncov/data-prep)
-3. [**Orientation: analysis workflow**](https://nextstrain.github.io/ncov/orientation-workflow)
-4. [**Orientation: which files should I touch?**](https://nextstrain.github.io/ncov/orientation-files)
-5. [**Running & troubleshooting**](https://nextstrain.github.io/ncov/running)
-6. [**Customizing your analysis**](https://nextstrain.github.io/ncov/customizing-analysis)
-7. [**Customizing your visualization**](https://nextstrain.github.io/ncov/customizing-visualization)
-8. [**Options for visualizing and sharing results**](https://nextstrain.github.io/ncov/sharing) (including working with sensitive metadata)
-9. [**Interpreting your results**](https://nextstrain.github.io/ncov/interpretation)
-10. [**Writing a narrative to highlight key findings**](https://nextstrain.github.io/ncov/narratives)
-
-### Download formatted datasets
-
-The hCoV-19 / SARS-CoV-2 genomes were generously shared via GISAID. We gratefully acknowledge the Authors, Originating and Submitting laboratories of the genetic sequence and metadata made available through GISAID on which this research is based.
-
-In order to download the GISAID data to run the analysis yourself, please see [this guide](https://nextstrain.github.io/ncov/data-prep).
-> Please note that `data/metadata.tsv` is no longer included as part of this repo. However, we provide continually-updated, pre-formatted metadata & fasta files for download through GISAID.
-
-### Read previous Situation Reports
-We issued weekly Situation Reports for the first ~5 months of the pandemic. You can find the Reports and their translations [here](https://nextstrain.org/ncov-sit-reps).
-
-### FAQs
-
-- Can't find your sequences in Nextstrain? Check [here](./docs/data_faq.md) for common reasons why your sequences may not be appearing.
-You can also use [clades.nextstrain.org](https://clades.nextstrain.org/) to perform some basic quality control on your sequences. If they are flagged by this tool, they will likely be excluded by our pipeline.
-- For information about how clades are defined, and the currently named clades, please see [here](./docs/naming_clades.md). To assign clades to your own sequences, you can use our clade assignment tool at [clades.nextstrain.org](https://clades.nextstrain.org/).
-
-### Bioinformatics notes
-
-Site numbering and genome structure uses [Wuhan-Hu-1/2019](https://www.ncbi.nlm.nih.gov/nuccore/MN908947) as reference. The phylogeny is rooted relative to early samples from Wuhan. Temporal resolution assumes a nucleotide substitution rate of [8 &times; 10^-4 subs per site per year](http://virological.org/t/phylodynamic-analysis-176-genomes-6-mar-2020/356). There were SNPs present in the nCoV samples in the first and last few bases of the alignment that were masked as likely sequencing artifacts.
-
----
-
-# Contributing
-
-We welcome contributions from the community! Please note that we strictly adhere to the [Contributor Covenant Code of Conduct](https://github.com/nextstrain/.github/blob/master/CODE_OF_CONDUCT.md).
-
-### Contributing to software or documentation
-Please see our [Contributor Guide](https://github.com/nextstrain/.github/blob/master/CONTRIBUTING.md) to get started!
-
-### Contributing data
-**Please note that we automatically pick up any SARS-CoV-2 data that is submitted to GISAID.**
-
-If you're a lab and you'd like to get started sequencing, please see:
-* [Protocols from the ARTIC network](https://www.protocols.io/groups/artic/publications)
-* [Funding opportunities for sequencing efforts](https://twitter.com/firefoxx66/status/1242147905768751106)
-* Or, if these don't meet your needs, [get in touch](mailto:hello@nextstrain.org)
-
----
-
-# Get in touch
-
-To report a bug, error, or feature request, please [open an isssue](https://github.com/nextstrain/ncov/issues).
-
-For questions, head over to the [discussion board](https://discussion.nextstrain.org/); we're happy to help!
+## Results
+To visualize results, drag and drop the auspice files created by pipeline (found in this repo in `./auspice/spike_global_genbank.json` and `./auspice/n_global_genbank.json` into [auspice.us](auspice.us). The phylogeny can be viewed interactively. Data for further downstream analysis of mutation frequencies in spike versus n was done by downloading the diversity panel data from auspice.
