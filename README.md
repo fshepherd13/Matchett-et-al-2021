@@ -28,5 +28,11 @@ snakemake --cores 8 --profile ./my_profiles/n_only
 snakemake --cores 8 --profile ./my_profiles/spike_only
 ```
 
-## Results
-To visualize results, drag and drop the auspice files created by pipeline (found in this repo in `./auspice/spike_global_genbank.json` and `./auspice/n_global_genbank.json` into [auspice.us](auspice.us). The phylogeny can be viewed interactively. Data for further downstream analysis of mutation frequencies in spike versus n was done by downloading the diversity panel data from auspice.
+# Results
+To visualize full results, drag and drop the auspice files created by pipeline (found in this repo in `./auspice/spike_global_genbank.json` and `./auspice/n_global_genbank.json` into [auspice.us](auspice.us). The phylogeny can be viewed interactively. Data for further downstream analysis of mutation frequencies in spike versus n was done by downloading the diversity panel data from auspice.
+
+## Diversity panel data
+Diversity panel data can be viewed in several ways in auspice, including per site entropy for amino acids or nucleotides, and mutational events for AA and NTs. Events refer to the number of nodes in the phylogenetic tree that undergo a change at a given gene or protein position. Entropy refers to the diversity of AA or NT identities at a site in the dataset as a whole. CSV-formatted data was downloaded from auspice and visualized with R for publication. See the data and R code under `./diversity_panel_data`.
+
+## Per site amino acid changes
+Masked amino acid alignments in fasta format that are created as part of this Nextstrain build were downloaded into Geneious. The fasta files are excluded from this repo due to size limitations, but can be provided upon request. To calculate average mutations per site, and average mutations per strain, the alignments were modified into a .csv file format with the strain name in column 1 and a concatenated amino acid sequence in column 2. Calculations were performed using the r script in `./diversity_calculations/`
