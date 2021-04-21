@@ -41,7 +41,7 @@ subsampling:
     global: 
       min_date: "--min-date 2020-09-01" #Pull everything since September 1st
       group_by: "country year month"
-      seq_per_group: 20
+      seq_per_group: 100
     
 refine:
   root: "Wuhan/WH01/2019"  #EPI_ISL_406798

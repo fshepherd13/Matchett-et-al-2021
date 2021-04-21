@@ -1,8 +1,9 @@
 #Spike-specific build, looking at sequences submitted since September
 
 builds:
-  spike_global_post_sept_genbank: #build name
+  spike_global_post_sept: #build name
     subsampling_scheme: post_september #subsample from the globe
+    region: global #Don't filter sequences based on geographic origin
 
 files:
   description: "my_profiles/spike_only_post_sept/description.md"
@@ -34,9 +35,10 @@ use_nextalign: true
 # Custom subsampling logic for post-september strains. 
 subsampling:
   post_september:
-    min_date: "--min-date 2020-09-01" #Pull everything since September 1st
-    group_by: "country year month"
-    seq_per_group: 100
+    global:
+      min_date: "--min-date 2020-09-01" #Pull everything since September 1st
+      group_by: "country year month"
+      seq_per_group: 100
     
 refine:
   root: "Wuhan/WH01/2019"  #EPI_ISL_406798
