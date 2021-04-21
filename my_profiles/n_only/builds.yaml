@@ -1,6 +1,6 @@
 #Nucleocapsid-specific build
 custom_rules:
-  - nextstrain_profiles/nextstrain/subsampling_ranges.smk
+  - workflow/snakemake_rules/subsampling_ranges.smk
 
 builds:
   n_global_genbank: #build name
