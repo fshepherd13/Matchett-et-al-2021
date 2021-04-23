@@ -3,9 +3,11 @@
 benchmarks/
 logs/
 results/
+results_old/
 build/
 data/*
 auspice*/
+auspice/
 defaults/colors.tsv
 defaults/colors_*.tsv
 stats.json
