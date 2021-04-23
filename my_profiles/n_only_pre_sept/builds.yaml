@@ -1,0 +1,47 @@
+#Nucleocapsid-specific build, looking at sequences submitted since September
+
+builds:
+  n_global_pre_sept: #build name
+    subsampling_scheme: pre_september #subsample from the globe
+    region: global #Don't filter sequences based on geographic origin
+
+files:
+  description: "my_profiles/n_only_pre_sept/description.md"
+  auspice_config: "my_profiles/n_only_pre_sept/auspice_config.json"
+
+# Mask settings determine how the multiple sequence alignment is masked prior to phylogenetic inference.
+# Added 2021-03-23 to mask sites that are not part of the nucleocapsid gene
+
+mask:
+  # Number of bases to mask from the beginning and end of the alignment. These cover everything up to the beginning
+  # of the nucleocapsid CDS (mask_from_beginning) and after its end (mask_from_end)
+  mask_from_beginning: 28273
+  mask_from_end: 370
+
+  # Specific sites to mask in the reference genome's coordinates.
+  # These are 1-indexed coordinates of sites that have been identified as prone to sequencing errors.
+  # 13402, 24389 and 24390 are restricted to Belgian samples
+  mask_sites: "13402 24389 24390"
+  
+# Filter settings
+filter:
+  # Require nearly full length nucleocapsid gene CDS.
+  min_length: 1200
+  
+# Use nextalign instead of MAFFT (appropriate for larger datasets)
+genes: ["N"]
+use_nextalign: true
+
+# Distance setting
+distance: "N"
+
+# Custom subsampling logic for post-september strains. 
+subsampling:
+  pre_september:
+    global: 
+      max_date: "--max-date 2020-09-01" #Pull everything from before September 1st,2020
+      group_by: "country year month"
+      seq_per_group: 100
+    
+refine:
+  root: "Wuhan/WH01/2019"  #EPI_ISL_406798
