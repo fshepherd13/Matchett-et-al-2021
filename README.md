@@ -19,9 +19,13 @@ Nextstrain runs with a conda environment. See [setup and installation](https://n
 conda env create --file environment.yaml
 conda activate nextstrain
 ```
+## Builds
+There are several directories within `./my_profiles` which refer to different builds. *The builds used in the manuscript Matchett et al., 2021 are `./my_profiles/n_only` and `./my_profiles/spike_only`.* These builds result in a downsampled set of ~1900 sequences by splitting the data into geographic region and months, and sampling about 200 strains per region from the most recent four months (Jan-Apr 2021) and 200 strains per region from the months before that. For instructions on creating your own builds, see the resources on [Nextstrain](https://nextstrain.org).
+
+There are additional builds that are not part of the manuscript that are meant to sample strains from before and after September 2020 (`./my_profiles/n_only_pre_sept` and `./my_profiles/spike_only_pre_sept`) and the other subsampling strains after September 2020 (`./my_profiles/n_only_post_sept` and `./my_profiles/spike_only_post_sept`). Here, each build specifies the sampling date cutoff for the sequences, and takes 100 sequences per country, per month to create a downsampled set of SARS-CoV-2 sequences. These are in progress.
 
 ## Running the build
-To re-run the builds for spike or nucleocapsid genes, run the following:
+To re-run the builds for spike or nucleocapsid genes, run the following after compiling raw data from Genbank (see above):
 ```
 export AUGUR_RECURSION_LIMIT=10000
 snakemake --cores 8 --profile ./my_profiles/n_only
@@ -29,10 +33,7 @@ snakemake --cores 8 --profile ./my_profiles/spike_only
 ```
 
 # Results
-To visualize full results, drag and drop the auspice files created by pipeline (found in this repo in `./auspice/spike_global_genbank.json` and `./auspice/n_global_genbank.json` into [auspice.us](auspice.us). The phylogeny can be viewed interactively. Data for further downstream analysis of mutation frequencies in spike versus n was done by downloading the diversity panel data from auspice.
+To visualize full results, drag and drop the auspice files created by pipeline (found in this repo in `./auspice/spike_global_genbank.json` and `./auspice/n_global_genbank.json` into [auspice.us](auspice.us). The phylogeny can be viewed interactively. Data for further downstream analysis of mutation frequencies in spike versus n was done by downloading the diversity panel data from auspice (described next).
 
 ## Diversity panel data
 Diversity panel data can be viewed in several ways in auspice, including per site entropy for amino acids or nucleotides, and mutational events for AA and NTs. Events refer to the number of nodes in the phylogenetic tree that undergo a change at a given gene or protein position. Entropy refers to the diversity of AA or NT identities at a site in the dataset as a whole. CSV-formatted data was downloaded from auspice and visualized with R for publication. See the data and R code under `./diversity_panel_data`.
-
-## Per site amino acid changes
-Masked amino acid alignments in fasta format that are created as part of this Nextstrain build were downloaded into Geneious. The fasta files are excluded from this repo due to size limitations, but can be provided upon request. To calculate average mutations per site, and average mutations per strain, the alignments were modified into a .csv file format with the strain name in column 1 and a concatenated amino acid sequence in column 2. Calculations were performed using the r script in `./diversity_calculations/`
